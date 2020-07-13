@@ -10,7 +10,7 @@ class Render(object):
 	#constructor
 	def __init__(self):
 		self.framebuffer = []
-		self.curr_color = BLACK
+		self.curr_color = WHITE
 
 	def glCreateWindow(self, width, height):
 		#width and height for the framebuffer
@@ -19,6 +19,7 @@ class Render(object):
 
 	def glInit(self):
 		self.curr_color = BLACK
+		
 
 	def glViewport(self, x, y, width, height):
 		self.viewportX = x
@@ -80,7 +81,7 @@ class Render(object):
 
 		for x in range(self.height):
 			for y in range(self.width):
-				archivo.write(self.pixels[x][y])
+				archivo.write(self.framebuffer[x][y])
 
 
 		#Close file
