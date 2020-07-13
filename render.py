@@ -1,26 +1,58 @@
-from data_types_module import dword, 
+from data_types_module import dword, word, char
+from utils import color
 
+BLACK = color(0,0,0)
+WHITE = color(255,255,255)
+RED = color(255,0,0)
 
 class Render(object):
 
 	#constructor
+	def __init__(self):
+		self.framebuffer = []
+		self.curr_color = BLACK
 
-	def __init__(self, width, height):
+	def glCreateWindow(self, width, height):
+		#width and height for the framebuffer
 		self.width = width
 		self.height = height
-		self.curr_color = (255, 255, 255)
-		self.clear()
 
-	def clear(self):
-		self.pixels = [ [BLACK for x in range(self.width)] for y in range(self.height) ]
+	def glInit(self):
+		self.curr_color = BLACK
+
+	def glViewport(self, x, y, width, height):
+		self.viewportX = x
+		self.viewportY = y
+		self.viewportWidth = width
+		self.viewportHeight = height
+
+	def glClear(self):
+		self.framebuffer = [[BLACK for x in range(self.width)] for y in range(self.height)]
+
+	def glClearColor(self, r, g, b):
+		clearColor = color( 
+				round(r * 255),
+				round(g * 255),
+				round(b * 255)
+			)
+
+		self.framebuffer = [[clearColor for x in range(self.width)] for y in range(self.height)]
+
+	def glVertex(self, x, y):
+		#las funciones fueron obtenidas de https://www.khronos.org/registry/OpenGL-Refpages/es2.0/xhtml/glViewport.xml
+		X = round((x+1) * (self.viewportWidth/2) + self.viewportX)
+		Y = round((y+1) * (self.viewportHeight/2) + self.viewportY)
+		self.point(X,Y)
+
+	def glColor(self, r, g, b):
+		self.curr_color = color(round(r * 255),round(g * 255),round(b * 255))
+
 
 	def point(self, x, y):
-		self.pixels[x][y] = self.curr_color
+		self.framebuffer[x][y] = self.curr_color
 
-	def set_color(self, _color):
-		self.curr_color = _color
 
-	def write(self, filename):
+	def glFinish(self, filename):
 		archivo = open(filename, 'wb')
 
 		# File header 14 bytes
